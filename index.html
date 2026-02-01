@@ -2,7 +2,7 @@
 <html lang="ar">
 <head>
   <meta charset="UTF-8">
-  <title>حساب التاريخ الهجري بعد 10 و30 يوم</title>
+  <title>حساب نهاية المهلة الاعتراضية</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/moment-hijri@3.0.0/moment-hijri.min.js"></script>
 
@@ -17,13 +17,11 @@
       transition: background-color 0.4s ease, color 0.4s ease;
     }
 
-    /* وضع ليلي */
     .dark {
       background-color: #1a1a1a;
       color: #fff;
     }
 
-    /* تأثير عند الضغط على زر الوضع الليلي */
     .dark-transition {
       transition: background-color 0.6s ease, color 0.6s ease;
     }
@@ -42,7 +40,6 @@
       cursor: pointer;
     }
 
-    /* صندوق النتائج مع خلفية خفيفة */
     #resultBox {
       margin-top: 30px;
       padding: 20px;
@@ -57,7 +54,6 @@
       display: none;
     }
 
-    /* خلفية الصندوق في الوضع الليلي */
     .dark #resultBox {
       background: linear-gradient(135deg, #2a2a2a, #1f1f1f);
       color: #fff;
@@ -114,7 +110,8 @@
 
 <body class="dark-transition">
 
-  <h2>اختر أو أدخل تاريخ هجري</h2>
+  <h1 style="margin-bottom:10px;">حساب نهاية المهلة الاعتراضية</h1>
+  <h2>ادخل تاريخ إصدار الصك</h2>
 
   <input list="days" id="day" placeholder="اليوم">
   <datalist id="days">
