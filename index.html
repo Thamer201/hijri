@@ -5,6 +5,7 @@
   <title>حساب التاريخ الهجري بعد 10 و30 يوم</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/moment-hijri@3.0.0/moment-hijri.min.js"></script>
+
   <style>
     body {
       font-family: Arial;
@@ -13,30 +14,79 @@
       margin-top: 40px;
       direction: rtl;
       background-color: #f0f0f0;
+      transition: background-color 0.4s ease, color 0.4s ease;
     }
+
+    /* وضع ليلي */
+    .dark {
+      background-color: #1a1a1a;
+      color: #fff;
+    }
+
+    /* تأثير عند الضغط على زر الوضع الليلي */
+    .dark-transition {
+      transition: background-color 0.6s ease, color 0.6s ease;
+    }
+
     select, input {
       margin: 8px;
       padding: 14px;
       font-size: 22px;
       width: 200px;
     }
+
     button {
       padding: 14px 28px;
       font-size: 20px;
       margin-top: 12px;
       cursor: pointer;
     }
-    #result {
-      margin-top: 24px;
+
+    /* صندوق النتائج مع خلفية خفيفة */
+    #resultBox {
+      margin-top: 30px;
+      padding: 20px;
+      background: linear-gradient(135deg, #ffffff, #f7f7f7);
+      width: 80%;
+      margin-left: auto;
+      margin-right: auto;
+      border-radius: 12px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+      text-align: right;
+      transition: 0.4s;
+      display: none;
+    }
+
+    /* خلفية الصندوق في الوضع الليلي */
+    .dark #resultBox {
+      background: linear-gradient(135deg, #2a2a2a, #1f1f1f);
+      color: #fff;
+      box-shadow: 0 3px 10px rgba(255,255,255,0.1);
+    }
+
+    .title {
+      font-size: 22px;
       font-weight: bold;
-      font-size: 20px;
-      color: #333;
-      white-space: pre-line;
-    }
-    h2 {
+      margin-bottom: 10px;
       color: #444;
-      font-size: 24px;
     }
+
+    .dark .title {
+      color: #ddd;
+    }
+
+    .line {
+      margin-bottom: 12px;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .icon {
+      font-size: 22px;
+    }
+
     #logo {
       margin-top: 30px;
       font-size: 12px;
@@ -52,9 +102,18 @@
       box-shadow: 0 2px 6px rgba(0,0,0,0.2);
       user-select: none;
     }
+
+    #darkBtn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 18px;
+      cursor: pointer;
+    }
   </style>
 </head>
-<body>
+
+<body class="dark-transition">
+
   <h2>اختر أو أدخل تاريخ هجري</h2>
 
   <input list="days" id="day" placeholder="اليوم">
@@ -93,12 +152,15 @@
 
   <br>
   <button onclick="calculateHijri()">احسب</button>
-  <div id="result"></div>
+
+  <button id="darkBtn" onclick="toggleDark()">تبديل الوضع الليلي</button>
+
+  <div id="resultBox"></div>
+
   <div id="logo">th</div>
 
   <script>
 
-    // دالة ترجمة أيام الأسبوع للعربي
     function arabicDayName(eng) {
       const days = {
         "Sunday": "الأحد",
@@ -112,13 +174,21 @@
       return days[eng] || eng;
     }
 
+    function isHoliday(dayName) {
+      return (dayName === "الجمعة" || dayName === "السبت") ? " (عطلة رسمية)" : "";
+    }
+
+    function toggleDark() {
+      document.body.classList.toggle("dark");
+    }
+
     function calculateHijri() {
       const day = document.getElementById("day").value;
       const month = document.getElementById("month").value;
       const year = document.getElementById("year").value;
 
       if (!day || !month || !year) {
-        document.getElementById("result").innerText = "يرجى إدخال تاريخ هجري صحيح";
+        alert("يرجى إدخال تاريخ هجري صحيح");
         return;
       }
 
@@ -130,21 +200,31 @@
       const gregorian10 = moment(after10.format('YYYY-MM-DD')).format('D-MM-YYYY');
       const gregorian30 = moment(after30.format('YYYY-MM-DD')).format('D-MM-YYYY');
 
-      // استخراج اسم اليوم
       const day10 = arabicDayName(after10.format('dddd'));
       const day30 = arabicDayName(after30.format('dddd'));
 
-      document.getElementById("result").innerText =
-        `📅 التاريخ بعد 10 أيام (من اليوم التالي):\n` +
-        `اليوم: ${day10}\n` +
-        `هجري: ${after10.iDate()}-${after10.iMonth() + 1}-${after10.iYear()} هـ\n` +
-        `ميلادي: ${gregorian10} م\n\n` +
+      const holiday10 = isHoliday(day10);
+      const holiday30 = isHoliday(day30);
 
-        `📅 التاريخ بعد 30 يوم (من اليوم التالي):\n` +
-        `اليوم: ${day30}\n` +
-        `هجري: ${after30.iDate()}-${after30.iMonth() + 1}-${after30.iYear()} هـ\n` +
-        `ميلادي: ${gregorian30} م`;
+      document.getElementById("resultBox").style.display = "block";
+
+      document.getElementById("resultBox").innerHTML = `
+        <div class="title">📅 التاريخ بعد 10 أيام</div>
+
+        <div class="line"><span class="icon">📌</span> اليوم: ${day10}${holiday10}</div>
+        <div class="line"><span class="icon">🌙</span> هجري: ${after10.iDate()}-${after10.iMonth() + 1}-${after10.iYear()} هـ</div>
+        <div class="line"><span class="icon">☀️</span> ميلادي: ${gregorian10} م</div>
+
+        <hr>
+
+        <div class="title">📅 التاريخ بعد 30 يوم</div>
+
+        <div class="line"><span class="icon">📌</span> اليوم: ${day30}${holiday30}</div>
+        <div class="line"><span class="icon">🌙</span> هجري: ${after30.iDate()}-${after30.iMonth() + 1}-${after30.iYear()} هـ</div>
+        <div class="line"><span class="icon">☀️</span> ميلادي: ${gregorian30} م</div>
+      `;
     }
   </script>
+
 </body>
 </html>
