@@ -97,6 +97,21 @@
   <div id="logo">th</div>
 
   <script>
+
+    // دالة ترجمة أيام الأسبوع للعربي
+    function arabicDayName(eng) {
+      const days = {
+        "Sunday": "الأحد",
+        "Monday": "الإثنين",
+        "Tuesday": "الثلاثاء",
+        "Wednesday": "الأربعاء",
+        "Thursday": "الخميس",
+        "Friday": "الجمعة",
+        "Saturday": "السبت"
+      };
+      return days[eng] || eng;
+    }
+
     function calculateHijri() {
       const day = document.getElementById("day").value;
       const month = document.getElementById("month").value;
@@ -115,11 +130,18 @@
       const gregorian10 = moment(after10.format('YYYY-MM-DD')).format('D-MM-YYYY');
       const gregorian30 = moment(after30.format('YYYY-MM-DD')).format('D-MM-YYYY');
 
+      // استخراج اسم اليوم
+      const day10 = arabicDayName(after10.format('dddd'));
+      const day30 = arabicDayName(after30.format('dddd'));
+
       document.getElementById("result").innerText =
         `📅 التاريخ بعد 10 أيام (من اليوم التالي):\n` +
+        `اليوم: ${day10}\n` +
         `هجري: ${after10.iDate()}-${after10.iMonth() + 1}-${after10.iYear()} هـ\n` +
         `ميلادي: ${gregorian10} م\n\n` +
+
         `📅 التاريخ بعد 30 يوم (من اليوم التالي):\n` +
+        `اليوم: ${day30}\n` +
         `هجري: ${after30.iDate()}-${after30.iMonth() + 1}-${after30.iYear()} هـ\n` +
         `ميلادي: ${gregorian30} م`;
     }
